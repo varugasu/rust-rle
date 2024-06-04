@@ -26,31 +26,26 @@ pub fn lre_encode(data: String) -> String {
 
 pub fn lre_decode(data: String) -> String {
     let mut decoded_data = String::new();
+    let mut chars = data.chars().peekable();
 
-    if data.is_empty() {
-        return decoded_data;
-    }
+    while let Some(current_char) = chars.next() {
+        let mut count = String::new();
 
-    let mut current_char = String::new();
-    let mut count = String::new();
-    for c in data.chars() {
-        if c.is_digit(10) {
-            count.push(c);
-        } else {
-            if current_char.is_empty() {
-                current_char.push(c);
+        while let Some(&c) = chars.peek() {
+            if c.is_digit(10) {
+                count.push(c);
+                chars.next();
             } else {
-                let n = count.parse::<usize>().unwrap();
-                decoded_data.push_str(&current_char.repeat(n));
-                current_char.clear();
-                count.clear();
-                current_char.push(c);
+                break;
             }
         }
-    }
 
-    let n = count.parse::<usize>().unwrap();
-    decoded_data.push_str(&current_char.repeat(n));
+        if let Ok(n) = count.parse::<usize>() {
+            decoded_data.push_str(&current_char.to_string().repeat(n));
+        } else {
+            panic!("Invalid count: {}", count);
+        }
+    }
 
     decoded_data
 }
