@@ -25,7 +25,34 @@ pub fn lre_encode(data: String) -> String {
 }
 
 pub fn lre_decode(data: String) -> String {
-    data
+    let mut decoded_data = String::new();
+
+    if data.is_empty() {
+        return decoded_data;
+    }
+
+    let mut current_char = String::new();
+    let mut count = String::new();
+    for c in data.chars() {
+        if c.is_digit(10) {
+            count.push(c);
+        } else {
+            if current_char.is_empty() {
+                current_char.push(c);
+            } else {
+                let n = count.parse::<usize>().unwrap();
+                decoded_data.push_str(&current_char.repeat(n));
+                current_char.clear();
+                count.clear();
+                current_char.push(c);
+            }
+        }
+    }
+
+    let n = count.parse::<usize>().unwrap();
+    decoded_data.push_str(&current_char.repeat(n));
+
+    decoded_data
 }
 
 #[cfg(test)]
