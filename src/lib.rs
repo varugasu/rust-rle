@@ -1,25 +1,25 @@
 pub fn lre_encode(data: String) -> String {
     let mut encoded_data = String::new();
+    let mut chars = data.chars().peekable();
 
-    if data.is_empty() {
-        return encoded_data;
-    }
+    if let Some(mut current_char) = chars.next() {
+        let mut count = 1;
 
-    let mut count = 0;
-    let mut current_char = data.chars().next().unwrap();
-    for c in data.chars() {
-        if c == current_char {
-            count += 1;
-        } else {
-            encoded_data.push(current_char);
-            encoded_data.push_str(&count.to_string());
-            current_char = c;
-            count = 1;
+        while let Some(&c) = chars.peek() {
+            if c == current_char {
+                count += 1
+            } else {
+                encoded_data.push(current_char);
+                encoded_data.push_str(&count.to_string());
+                current_char = c;
+                count = 1;
+            }
+            chars.next();
         }
-    }
 
-    encoded_data.push(current_char);
-    encoded_data.push_str(&count.to_string());
+        encoded_data.push(current_char);
+        encoded_data.push_str(&count.to_string());
+    }
 
     encoded_data
 }
